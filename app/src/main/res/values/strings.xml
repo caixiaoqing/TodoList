@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">AwesomeReminder</string>
+    <string name="app_name">TODO</string>
     <string name="action_settings">Settings</string>
+
+    <string name="whats_next">What\'s next</string>
+    <string name="completed">Completed</string>
+    <string name="action_delete">Delete</string>
 </resources>
