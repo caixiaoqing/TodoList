@@ -1,5 +1,6 @@
 package com.caixiaoqing.awesomereminder.adapters;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.caixiaoqing.awesomereminder.MainActivity;
 import com.caixiaoqing.awesomereminder.R;
+import com.caixiaoqing.awesomereminder.TodoEditActivity;
 import com.caixiaoqing.awesomereminder.models.Todo;
 
 import java.util.List;
@@ -59,16 +61,18 @@ public class TodoListAdapter extends BaseAdapter {
 
         setupViewHolder(i, vh);
 
-        setupIntent2TodoEditActivity(convertView);
+        setupIntent2TodoEditActivity(convertView, i);
 
         return convertView;
     }
 
-    private void setupIntent2TodoEditActivity(View convertView) {
+    private void setupIntent2TodoEditActivity(View convertView, final int i) {
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //TODO 1 switch to TodoEditActivity
+                Intent intent = new Intent(activity, TodoEditActivity.class);
+                intent.putExtra(TodoEditActivity.KEY_TODO, (Todo) getItem(i));
+                activity.startActivityForResult(intent, activity.REQ_CODE_TODO_EDIT);
             }
         });
     }

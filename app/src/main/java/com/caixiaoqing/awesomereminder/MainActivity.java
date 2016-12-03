@@ -1,5 +1,7 @@
 package com.caixiaoqing.awesomereminder;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +22,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int REQ_CODE_TODO_EDIT = 100;
+
     private List<Todo> todos;
 
     @Override
@@ -31,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
         mockData();
         setupUI();
-
-
     }
 
     private void setupUI() {
@@ -50,9 +52,19 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO 1-2 switch to TodoEditActivity
+                Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
+                startActivityForResult(intent, REQ_CODE_TODO_EDIT);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQ_CODE_TODO_EDIT && resultCode == Activity.RESULT_OK) {
+            //TODO 1-4 parseData
+        }
     }
 
     private void mockData() {

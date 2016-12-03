@@ -17,6 +17,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.NoActionBarShadow" parent="AppTheme">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <!-- TODO 4 Error retrieving parent for item-->
     <style name="AppTheme.TextView" />
 

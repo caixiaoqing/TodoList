@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/todo_edit_margin_top"/>
 
+        <!-- android:singleLine="true" -->
         <EditText
             android:id="@+id/toto_detail_todo_edit"
             android:layout_width="match_parent"
@@ -22,7 +23,6 @@
             android:layout_marginLeft="@dimen/spacing_medium"
             android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/todo_edit_margin_bottom"
-            android:singleLine="true"
             android:textSize="@dimen/todo_edit_font_size"
             android:hint="@string/whats_next"
             tools:text="What\'s next" />

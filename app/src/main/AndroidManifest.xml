@@ -18,6 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- TODO BUG android:theme="@style/AppTheme.NoActionBarShadow" -->
+        <activity android:name=".TodoEditActivity"
+                  android:theme="@style/AppTheme.NoActionBarShadow" />
     </application>
 
 </manifest>
