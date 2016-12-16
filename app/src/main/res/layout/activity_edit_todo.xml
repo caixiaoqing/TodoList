@@ -9,14 +9,13 @@
         android:id="@+id/appbar"
         android:layout_height="@dimen/todo_edit_app_bar_height"
         android:layout_width="match_parent"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:weightSum="1">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/todo_edit_margin_top"/>
 
-        <!-- android:singleLine="true" -->
+        <!-- android:singleLine="true" deprecated-->
         <EditText
             android:id="@+id/toto_detail_todo_edit"
             android:layout_width="match_parent"
@@ -25,6 +24,7 @@
             android:layout_marginRight="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/todo_edit_margin_bottom"
             android:textSize="@dimen/todo_edit_font_size"
+            android:maxLines="1"
             android:hint="@string/whats_next"
             tools:text="What\'s next" />
     </android.support.design.widget.AppBarLayout>
@@ -45,6 +45,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:layout_marginBottom="6dp">
+
             <CheckBox
                 android:id="@+id/todo_detail_complete"
                 android:layout_width="wrap_content"

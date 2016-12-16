@@ -29,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         //Step 1 : prep data from intent-input
         final int notificationId = 100; // this will be used to cancel the notification
         //Specail case: Parcelable bug for AlarmManager
-        //Todo todo = intent.getParcelableExtra(TodoEditActivity.KEY_TODO);
+        //*** = intent.getParcelableExtra(TodoEditActivity.KEY_TODO);
         String todoId = intent.getStringExtra(TodoEditActivity.KEY_TODO_ID);
         Todo todo = ModelUtils.get(context, todoId, new TypeToken<Todo>(){});
 

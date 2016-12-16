@@ -47,7 +47,7 @@ public class AlarmUtils {
         //Step 3: AlarmManager (getSystemService) . set()
         AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarmMgr.set(AlarmManager.RTC_WAKEUP, // will wake up the device
-                System.currentTimeMillis() + (15 * 1000), //todo.remindDate.getTime(),
+                todo.remindDate.getTime(),    // For test System.currentTimeMillis() + (15 * 1000),
                 alarmIntent);
     }
 }

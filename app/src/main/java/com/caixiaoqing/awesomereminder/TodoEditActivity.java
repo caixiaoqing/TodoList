@@ -235,7 +235,7 @@ public class TodoEditActivity extends AppCompatActivity implements
         Calendar c = Calendar.getInstance();
         c.set(year, monthOfYear, dayOfMonth);
 
-        //todo.remindDate = c.getTime(); //BUG it can be still null yet. --add()-->
+        //***.remindDate = c.getTime(); //BUG it can be still null yet. --add()-->
         remindDateFromPicker = c.getTime();
         dateTv.setText(DateUtils.dateToStringDate(remindDateFromPicker));
     }

@@ -133,12 +133,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    private void mockData() {
-        todos = new ArrayList<>();
-        for(int i = 0; i < 100; i++){
-            todos.add(new Todo("fake todo" + i, DateUtils.stringToDate("2016 12 02 9:40")));
-        }
-    }
-    */
 }
