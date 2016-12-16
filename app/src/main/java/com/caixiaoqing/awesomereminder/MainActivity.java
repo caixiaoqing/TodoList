@@ -3,28 +3,38 @@ package com.caixiaoqing.awesomereminder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.caixiaoqing.awesomereminder.adapters.TodoListAdapter;
 import com.caixiaoqing.awesomereminder.models.Todo;
 import com.caixiaoqing.awesomereminder.utils.DateUtils;
+import com.caixiaoqing.awesomereminder.utils.ModelUtils;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQ_CODE_TODO_EDIT = 100;
 
+    private static final String TODOS = "todos";
+
     private List<Todo> todos;
+    private TodoListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        mockData();
+        loadData();
         setupUI();
     }
 
@@ -43,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListView() {
-        TodoListAdapter adapter = new TodoListAdapter(this, todos);
+        adapter = new TodoListAdapter(this, todos);
         ((ListView) findViewById(R.id.main_list_view)).setAdapter(adapter);
     }
 
@@ -60,47 +70,75 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQ_CODE_TODO_EDIT && resultCode == Activity.RESULT_OK) {
-            //TODO 1-4 parseData
+
+            String todoId = data.getStringExtra(TodoEditActivity.KEY_TODO_ID);
+            if (todoId != null) {
+                deleteTodoItem(todoId);
+            } else {
+                Todo todoFromEdit = data.getParcelableExtra(TodoEditActivity.KEY_TODO);
+                updateTodoItem(todoFromEdit);
+            }
         }
     }
 
+    public void updateTodo(int i, boolean isChecked) {
+        Todo t = todos.get(i);
+        t.isDone = isChecked;
+        todos.set(i, t);
+
+        adapter.notifyDataSetChanged();
+        ModelUtils.save(this, TODOS, todos);
+    }
+
+    private void updateTodoItem(Todo todoFromEdit) {
+        boolean found = false;
+        for (int i = 0; i < todos.size(); ++i) {
+            Todo t = todos.get(i);
+            if(t.id.equals(todoFromEdit.id)){
+                //t = todoFromEdit; //No effec
+                todos.set(i, todoFromEdit);
+                found = true;
+                break;
+            }
+        }
+
+        if(!found){
+            todos.add(todoFromEdit); //Add
+        }
+        adapter.notifyDataSetChanged();
+        ModelUtils.save(this, TODOS, todos);
+    }
+
+    private void deleteTodoItem(@NonNull String id) {
+        Toast.makeText(this, id, Toast.LENGTH_LONG).show();
+        for (int i = 0; i < todos.size(); ++i) {
+            Todo item = todos.get(i);
+            if (TextUtils.equals(item.id, id)) {
+                todos.remove(i);
+                break;
+            }
+        }
+        adapter.notifyDataSetChanged();
+        ModelUtils.save(this, TODOS, todos);
+    }
+
+    private void loadData() {
+        todos = ModelUtils.get(this, TODOS, new TypeToken<List<Todo>>(){});
+        if(todos == null){
+            todos = new ArrayList<>();
+        }
+    }
+
+    /*
     private void mockData() {
-        //TODO 1-3 Bug NullPointerException
         todos = new ArrayList<>();
         for(int i = 0; i < 100; i++){
             todos.add(new Todo("fake todo" + i, DateUtils.stringToDate("2016 12 02 9:40")));
         }
-    }
-
-    public void updateTodo(boolean isChecked) {
-        //TODO 2 update
-    }
-
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
     */
 }

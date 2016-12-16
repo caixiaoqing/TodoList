@@ -77,7 +77,7 @@ public class TodoListAdapter extends BaseAdapter {
         });
     }
 
-    private void setupViewHolder(int i, ViewHolder vh) {
+    private void setupViewHolder(final int i, ViewHolder vh) {
         final Todo todo = (Todo) getItem(i);
         vh.todoText.setText(todo.text);
         vh.doneCheckbox.setChecked(todo.isDone);
@@ -86,7 +86,7 @@ public class TodoListAdapter extends BaseAdapter {
 
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                activity.updateTodo(isChecked);
+                activity.updateTodo(i, isChecked);
             }
         });
     }

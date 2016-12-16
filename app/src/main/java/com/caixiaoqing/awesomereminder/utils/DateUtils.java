@@ -18,6 +18,14 @@ public class DateUtils {
     private static DateFormat dateFormat =
             new SimpleDateFormat("yyyy MM dd HH:mm", Locale.getDefault());
 
+    // "Wed, 09 30, 2016"
+    private static DateFormat dateFormatDate =
+            new SimpleDateFormat("EEE, MMM dd, yyyy", Locale.getDefault());
+
+    // 12:59
+    private static DateFormat dateFormatTime =
+            new SimpleDateFormat("HH:mm", Locale.getDefault());
+
     @NonNull
     public static Date stringToDate(@NonNull String string) {
         try {
@@ -25,5 +33,15 @@ public class DateUtils {
         } catch (ParseException e) {
             return Calendar.getInstance().getTime();
         }
+    }
+
+    @NonNull
+    public static String dateToStringDate(@NonNull Date date) {
+        return dateFormatDate.format(date);
+    }
+
+    @NonNull
+    public static String dateToStringTime(@NonNull Date date) {
+        return dateFormatTime.format(date);
     }
 }

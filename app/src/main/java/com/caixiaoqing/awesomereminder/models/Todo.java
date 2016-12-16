@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by caixiaoqing on 2/12/16.
@@ -16,10 +17,33 @@ public class Todo implements Parcelable {
     public Date remindDate;
 
     public Todo(String text, Date remindDate){
+        this.id = UUID.randomUUID().toString();
         this.text = text;
         this.isDone = false;
         this.remindDate = remindDate;
     }
+
+    protected Todo(Parcel in) {
+        id = in.readString();
+        text = in.readString();
+        isDone = in.readByte() != 0;
+
+        //Add parcel for Date
+        long date = in.readLong();
+        remindDate = date == 0 ? null : new Date(date);
+    }
+
+    public static final Creator<Todo> CREATOR = new Creator<Todo>() {
+        @Override
+        public Todo createFromParcel(Parcel in) {
+            return new Todo(in);
+        }
+
+        @Override
+        public Todo[] newArray(int size) {
+            return new Todo[size];
+        }
+    };
 
     @Override
     public int describeContents() {

@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_height="@dimen/todo_edit_app_bar_height"
         android:layout_width="match_parent"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -97,5 +98,18 @@
             style="@style/AppTheme.TextView.DeleteButton"/>
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/todo_detail_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:src="@drawable/ic_done_white_24dp"
+
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|end"
+        />
+
+
 
 </android.support.design.widget.CoordinatorLayout>
