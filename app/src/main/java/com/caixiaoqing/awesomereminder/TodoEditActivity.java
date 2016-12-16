@@ -3,6 +3,7 @@ package com.caixiaoqing.awesomereminder;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,9 +15,11 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.caixiaoqing.awesomereminder.models.Todo;
+import com.caixiaoqing.awesomereminder.utils.AlarmUtils;
 import com.caixiaoqing.awesomereminder.utils.DateUtils;
 import com.caixiaoqing.awesomereminder.utils.UIUtils;
 
@@ -28,10 +31,12 @@ import java.util.Date;
  */
 
 public class TodoEditActivity extends AppCompatActivity implements
-        DatePickerDialog.OnDateSetListener {
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener {
 
     public static final String KEY_TODO = "todo";
     public static final String KEY_TODO_ID = "todo_id";
+    public static final String KEY_NOTIFICATION_ID = "notification_id";
 
     private EditText todoEdit;
     private TextView dateTv;
@@ -39,7 +44,7 @@ public class TodoEditActivity extends AppCompatActivity implements
     private CheckBox completeCb;
 
     private Todo todo;
-    private Date remindDateFromPicker;
+    private Date remindDateFromPicker = null;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +77,10 @@ public class TodoEditActivity extends AppCompatActivity implements
 
     private void setupActionbar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(0);//TODO 5 setElevation ?
+
+        //https://developer.android.com/training/material/shadows-clipping.html
+        //http://hukai.me/android-training-course-in-chinese/material/shadows-clipping.html
+        getSupportActionBar().setElevation(0);
         setTitle(null);
     }
 
@@ -86,9 +94,10 @@ public class TodoEditActivity extends AppCompatActivity implements
             todoEdit.setText(todo.text);
             UIUtils.setTextViewStrikeThrough(todoEdit, todo.isDone);
             completeCb.setChecked(todo.isDone);
-            //TODO 5-2 think can remindDate be null?
+
             if(todo.remindDate != null) {
                 dateTv.setText(DateUtils.dateToStringDate(todo.remindDate));
+                //Special Case : what if user set date without time?
                 timeTv.setText(DateUtils.dateToStringTime(todo.remindDate));
             }
         }
@@ -120,14 +129,12 @@ public class TodoEditActivity extends AppCompatActivity implements
         });
     }
 
+    //Step 1: DatePickerDialog and show onClick()  + impl TimePickerDialog.OnTimeSetListener
     private void setupDatePicker() {
         dateTv.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Calendar c = Calendar.getInstance();
-                if (todo != null && todo.remindDate != null) {
-                    c.setTime(todo.remindDate);
-                }
+                Calendar c = getCalendarFromRemindDate();
                 Dialog dialog = new DatePickerDialog(
                         TodoEditActivity.this,
                         TodoEditActivity.this,
@@ -137,6 +144,28 @@ public class TodoEditActivity extends AppCompatActivity implements
                 dialog.show();
             }
         });
+
+        timeTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c = getCalendarFromRemindDate();
+                Dialog dialog = new TimePickerDialog(
+                        TodoEditActivity.this,
+                        TodoEditActivity.this,
+                        c.get(Calendar.HOUR_OF_DAY),
+                        c.get(Calendar.MINUTE),
+                        true);
+                dialog.show();
+            }
+        });
+    }
+
+    private Calendar getCalendarFromRemindDate() {
+        Calendar c = Calendar.getInstance();
+        if (todo != null && todo.remindDate != null) {
+            c.setTime(todo.remindDate);
+        }
+        return c;
     }
 
     private void setupEditDoneFab() {
@@ -152,18 +181,19 @@ public class TodoEditActivity extends AppCompatActivity implements
     private void saveAndExit() {
         if(todo == null){
             todo = new Todo(todoEdit.getText().toString(), remindDateFromPicker);
-            Toast.makeText(this, "Added " + todo.id, Toast.LENGTH_LONG).show();
         }
         else{
             todo.text = todoEdit.getText().toString();
-            todo.remindDate = remindDateFromPicker;
-            Toast.makeText(this, "Updated " + todo.id, Toast.LENGTH_LONG).show();
+            //Special Case : user just open and save (without pick date-time)
+            if(remindDateFromPicker != null) {
+                todo.remindDate = remindDateFromPicker;
+            }
         }
 
         todo.isDone = completeCb.isChecked();
 
         if (todo.remindDate != null) {
-            //TODO 5-3 AlarmUtils.setAlarm(this, todo);
+            AlarmUtils.setAlarm(this, todo);
         }
 
         Intent result = new Intent();
@@ -208,6 +238,16 @@ public class TodoEditActivity extends AppCompatActivity implements
         //todo.remindDate = c.getTime(); //BUG it can be still null yet. --add()-->
         remindDateFromPicker = c.getTime();
         dateTv.setText(DateUtils.dateToStringDate(remindDateFromPicker));
+    }
 
+    //Step 2: remember to init calendar with remindDateFromPicker + save c.getTime() back;
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Calendar c = getCalendarFromRemindDate();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+
+        remindDateFromPicker = c.getTime();
+        timeTv.setText(DateUtils.dateToStringTime(remindDateFromPicker));
     }
 }
