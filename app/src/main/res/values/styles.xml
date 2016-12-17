@@ -21,7 +21,6 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <!-- TODO 4 Error retrieving parent for item-->
     <style name="AppTheme.TextView" />
 
     <style name="AppTheme.TextView.DeleteButton">

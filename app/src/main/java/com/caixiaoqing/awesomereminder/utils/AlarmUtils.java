@@ -24,20 +24,22 @@ public class AlarmUtils {
         Calendar c = Calendar.getInstance(); // c will contain the current time
         if (todo.remindDate.compareTo(c.getTime()) < 0) { // this statement checks if date is smaller than current time
             // we only fire alarm when date is in the future
-            Toast.makeText(context, "setAlarm " + DateUtils.dateToStringTime(todo.remindDate) + " < "
-                    +DateUtils.dateToStringTime(c.getTime()), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "setAlarm " + DateUtils.dateToStringTime(***.remindDate) + " < "
+            //        +DateUtils.dateToStringTime(c.getTime()), Toast.LENGTH_LONG).show();
 
             return;
         }
-
-        Toast.makeText(context, "setAlarm " + DateUtils.dateToStringTime(todo.remindDate), Toast.LENGTH_LONG).show();
 
         //Step 2: Intent w data => PendingIntent from getBroadcast
         Intent intent = new Intent(context, AlarmReceiver.class);
         //Specail case: Parcelable bug for AlarmManager
         //Just for pre-caution, do not pass anything beside primitive type into AlarmManager PendingIntent Extra
         intent.putExtra(TodoEditActivity.KEY_TODO_ID, todo.id);
-        ModelUtils.save(context, todo.id, todo);
+        //ModelUtils.save(context, ***.id, ***);
+
+        byte[] bytes = ParcelableUtil.marshall(todo);
+        intent.putExtra(TodoEditActivity.KEY_TODO, bytes);
+
 
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context,
                                     0,
@@ -47,7 +49,8 @@ public class AlarmUtils {
         //Step 3: AlarmManager (getSystemService) . set()
         AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarmMgr.set(AlarmManager.RTC_WAKEUP, // will wake up the device
-                todo.remindDate.getTime(),    // For test System.currentTimeMillis() + (15 * 1000),
+                todo.remindDate.getTime(),
+                //System.currentTimeMillis() + (15 * 1000), // For test
                 alarmIntent);
     }
 }

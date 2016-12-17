@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import com.caixiaoqing.awesomereminder.models.Todo;
 import com.caixiaoqing.awesomereminder.utils.DateUtils;
 import com.caixiaoqing.awesomereminder.utils.ModelUtils;
+import com.caixiaoqing.awesomereminder.utils.ParcelableUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -31,7 +32,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         //Specail case: Parcelable bug for AlarmManager
         //*** = intent.getParcelableExtra(TodoEditActivity.KEY_TODO);
         String todoId = intent.getStringExtra(TodoEditActivity.KEY_TODO_ID);
-        Todo todo = ModelUtils.get(context, todoId, new TypeToken<Todo>(){});
+        //*** *** = ModelUtils.get(context, todoId, new TypeToken<***>(){});
+
+        byte[] bytes = intent.getByteArrayExtra(TodoEditActivity.KEY_TODO);
+        Todo todo = ParcelableUtil.unmarshall(bytes, Todo.CREATOR);
 
         //Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         //vibrator.vibrate(2000);
